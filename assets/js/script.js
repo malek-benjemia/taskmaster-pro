@@ -114,6 +114,11 @@ $("#trash").droppable({
   }
 });
 
+$("#modalDueDate").datepicker({
+  minDate: 1
+});
+
+
 
 // modal was triggered
 $("#task-form-modal").on("show.bs.modal", function() {
@@ -164,7 +169,7 @@ $(".list-group").on("click", "p", function() {
   textInput.trigger("focus");
 });
 
-// editable field was un-focused
+// editable field was un-focused --> change text
 $(".list-group").on("blur", "textarea", function() {
   // get current value of textarea
   var text = $(this).val();
@@ -194,16 +199,21 @@ $(".list-group").on("blur", "textarea", function() {
 // due date was clicked
 $(".list-group").on("click", "span", function() {
   // get current text
-  var date = $(this)
-    .text()
-    .trim();
+  var date = $(this).text().trim();
 
   // create new input element
-  var dateInput = $("<input>")
-    .attr("type", "text")
-    .addClass("form-control")
-    .val(date);
+  var dateInput = $("<input>").attr("type", "text").addClass("form-control").val(date);
+
   $(this).replaceWith(dateInput);
+
+  // enable jquery ui datepicker
+  dateInput.datepicker({
+  minDate: 1,
+  onClose: function() {
+    // when calendar is closed, force a "change" event on the `dateInput`
+    $(this).trigger("change");
+  }
+});
 
   // automatically bring up the calendar
   dateInput.trigger("focus");
@@ -231,6 +241,7 @@ $(".list-group").on("change", "input[type='text']", function() {
     .addClass("badge badge-primary badge-pill")
     .text(date);
     $(this).replaceWith(taskSpan);
+
 });
 
 // remove all tasks
